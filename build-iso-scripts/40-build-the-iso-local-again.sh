@@ -1,0 +1,342 @@
+#!/bin/bash
+#set -e
+##################################################################################################################
+#
+#   DO NOT JUST RUN THIS. EXAMINE AND JUDGE. RUN AT YOUR OWN RISK.
+#
+##################################################################################################################
+echo
+echo "################################################################## "
+tput setaf 2
+echo "Phase 1 : "
+echo "- Setting General parameters"
+tput sgr0
+echo "################################################################## "
+echo
+
+	#Let us set the desktop"
+	#First letter of desktop is small letter
+
+	desktop="plasma"
+	dmDesktop="plasma"
+
+	#mylastarchVersion='26.05.31'
+
+	isoLabel='mylastarch-Rc2-'$(date +%Y.%m.%d)'-x86_64.iso'
+
+	# setting of the general parameters
+	archisoRequiredVersion="archiso 88-1"
+	buildFolder=$HOME"/mylastarch-build"
+	outFolder=$HOME"/mylastarch-Out"
+	archisoVersion=$(sudo pacman -Q archiso)
+
+	echo "################################################################## "
+	echo "Building the desktop                   : "$desktop
+	#echo "Building version                       : "$mylastarchVersion
+	#echo "Iso label                              : "$isoLabel
+	echo "Do you have the right archiso version? : "$archisoVersion
+	echo "What is the required archiso version?  : "$archisoRequiredVersion
+	echo "Build folder                           : "$buildFolder
+	echo "Out folder                             : "$outFolder
+	echo "################################################################## "
+
+	if [ "$archisoVersion" == "$archisoRequiredVersion" ]; then
+		tput setaf 2
+		echo "##################################################################"
+		echo "Archiso has the correct version. Continuing ..."
+		echo "##################################################################"
+		tput sgr0
+	else
+	tput setaf 1
+	echo "###################################################################################################"
+	echo "You need to install the correct version of Archiso"
+	echo "Use 'sudo downgrade archiso' to do that"
+	echo "or update your system"
+	echo "###################################################################################################"
+	tput sgr0
+	fi
+
+echo
+echo "################################################################## "
+tput setaf 2
+echo "Phase 2 :"
+echo "- Checking if archiso is installed"
+echo "- Saving current archiso version to readme"
+echo "- Making mkarchiso verbose"
+tput sgr0
+echo "################################################################## "
+echo
+
+	package="archiso"
+
+	#----------------------------------------------------------------------------------
+
+	#checking if application is already installed or else install with aur helpers
+	if pacman -Qi $package &> /dev/null; then
+
+			echo "Archiso is already installed"
+
+	else
+
+		#checking which helper is installed
+		if pacman -Qi yay &> /dev/null; then
+
+			echo "################################################################"
+			echo "######### Installing with yay"
+			echo "################################################################"
+			yay -S --noconfirm $package
+
+		elif pacman -Qi trizen &> /dev/null; then
+
+			echo "################################################################"
+			echo "######### Installing with trizen"
+			echo "################################################################"
+			trizen -S --noconfirm --needed --noedit $package
+
+		fi
+
+		# Just checking if installation was successful
+		if pacman -Qi $package &> /dev/null; then
+
+			echo "################################################################"
+			echo "#########  "$package" has been installed"
+			echo "################################################################"
+
+		else
+
+			echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+			echo "!!!!!!!!!  "$package" has NOT been installed"
+			echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+			exit 1
+		fi
+
+	fi
+
+	echo
+	echo "Saving current archiso version to readme"
+	sudo sed -i "s/\(^archiso-version=\).*/\1$archisoVersion/" ../archiso.readme
+	echo
+	echo "Making mkarchiso verbose"
+	sudo sed -i 's/quiet="y"/quiet="n"/g' /usr/bin/mkarchiso
+
+#----------------------------------------------------------------------
+
+package="mylastarch-keyring"
+
+#checking if application is already installed or else install
+if pacman -Qi $package &> /dev/null; then
+	
+	echo "################################################################## "
+	echo "mylastarch keyring is already installed"	
+	echo "################################################################## "
+
+else
+
+	wget https://github.com/mylastarch/mylastarch_repo/raw/main/x86_64/mylastarch-keyring-1-7-x86_64.pkg.tar.zst -O /tmp/mylastarch-keyring-1-7-x86_64.pkg.tar.zst
+	sudo pacman -U --noconfirm --needed /tmp/mylastarch-keyring-1-7-x86_64.pkg.tar.zst
+
+fi
+
+# Just cheking if installtion was successful
+if pacman -Qi $package &> /dev/null; then
+
+	echo "################################################################## "
+	echo "############  "$package" has been installed"
+	echo "################################################################## "
+fi
+
+#----------------------------------------------------------------------
+
+
+echo
+echo "################################################################## "
+tput setaf 2
+echo "Phase 3 :"
+echo "- Deleting the build folder if one exists"
+echo "- Copying the Archiso folder to build folder"
+tput sgr0
+echo "################################################################## "
+echo
+
+	echo "Deleting the build folder if one exists - takes some time"
+	[ -d $buildFolder ] && sudo rm -rf $buildFolder
+	echo
+	echo "Copying the Archiso folder to build work"
+	echo
+	mkdir $buildFolder
+	cp -r ../archiso $buildFolder/archiso
+
+echo
+echo "################################################################## "
+tput setaf 2
+echo "Phase 4 :"
+#echo "- Deleting any files in /etc/skel"
+#echo "- Getting the last version of bashrc in /etc/skel"
+echo "- Removing the old packages.x86_64 file from build folder"
+echo "- Copying the new packages.x86_64 file to the build folder"
+echo "- Changing group for polkit folder"
+tput sgr0
+echo "################################################################## "
+echo
+
+	#echo "Deleting any files in /etc/skel"
+	#rm -rf $buildFolder/archiso/airootfs/etc/skel/.* 2> /dev/null
+	#echo
+
+	#echo "Getting the last version of bashrc in /etc/skel"
+	#echo
+	#wget https://raw.githubusercontent.com/arcolinux/arcolinux-root/master/etc/skel/.bashrc-latest -O $buildFolder/archiso/airootfs/etc/skel/.bashrc
+
+	echo "Removing the old packages.x86_64 file from build folder"
+	rm $buildFolder/archiso/packages.x86_64
+	echo
+	echo "Copying the new packages.x86_64 file to the build folder"
+	cp -f ../archiso/packages.x86_64 $buildFolder/archiso/packages.x86_64
+	echo
+	#echo "Changing group for polkit folder"
+	#sudo chgrp polkitd $buildFolder/archiso/airootfs/etc/polkit-1/rules.d
+	#is not working so fixing this during calamares installation
+
+echo
+echo "################################################################## "
+tput setaf 2
+echo "Phase 5 : "
+echo "- Changing all references"
+echo "- Adding time to /etc/dev-rel"
+tput sgr0
+echo "################################################################## "
+echo
+
+	#Setting variables
+
+	#profiledef.sh
+	oldname1='iso_name="mylastarch'
+	newname1='iso_name="mylastarch-Rc2'
+
+	oldname2='iso_label="mylastarch'
+	newname2='iso_label="mylastarch-Rc2'
+
+	oldname3='mylastarch'
+	newname3='mylastarch-Rc2'
+
+	#hostname
+	oldname4='mylastarch'
+	newname4='mylastarch-Rc2'
+
+	#sddm.conf user-session
+	oldname5='Session=plasma'
+	newname5='Session='$dmDesktop
+
+	echo "Changing all references"
+	echo
+	sed -i 's/'$oldname1'/'$newname1'/g' $buildFolder/archiso/profiledef.sh
+	sed -i 's/'$oldname2'/'$newname2'/g' $buildFolder/archiso/profiledef.sh
+	sed -i 's/'$oldname3'/'$newname3'/g' $buildFolder/archiso/airootfs/etc/dev-rel
+	sed -i 's/'$oldname4'/'$newname4'/g' $buildFolder/archiso/airootfs/etc/hostname
+	sed -i 's/'$oldname5'/'$newname5'/g' $buildFolder/archiso/airootfs/etc/sddm.conf
+
+	echo "Adding time to /etc/dev-rel"
+	date_build=$(date -d now)
+	echo "Iso build on : "$date_build
+	sudo sed -i "s/\(^ISO_BUILD=\).*/\1$date_build/" $buildFolder/archiso/airootfs/etc/dev-rel
+
+
+#echo
+#echo "################################################################## "
+#tput setaf 2
+#echo "Phase 6 :"
+#echo "- Cleaning the cache from /var/cache/pacman/pkg/"
+#tput sgr0
+#echo "################################################################## "
+#echo
+
+	#echo "Cleaning the cache from /var/cache/pacman/pkg/"
+	#yes | sudo pacman -Scc
+
+echo
+echo "################################################################## "
+tput setaf 2
+echo "Phase 7 :"
+echo "- Building the iso - this can take a while - be patient"
+tput sgr0
+echo "################################################################## "
+echo
+
+	[ -d $outFolder ] || mkdir $outFolder
+	cd $buildFolder/archiso/
+	sudo mkarchiso -v -w $buildFolder -o $outFolder $buildFolder/archiso/
+
+
+echo
+echo "################################################################## "
+tput setaf 2
+echo "Phase 7.5 :"
+echo "- Counting files in squashfs for Calamares progress display"
+tput sgr0
+echo "################################################################## "
+echo
+
+    squashfsFile="$buildFolder/iso/arch/x86_64/airootfs.sfs"
+    unpackfsConf="$HOME/MYLASTARCH/mylastarch-calamares-config/etc/calamares/modules/unpackfs1.conf"
+
+    if [ -f "$squashfsFile" ]; then
+        echo "Counting files in $squashfsFile ..."
+        fileCount=$(unsquashfs -l "$squashfsFile" | wc -l)
+        echo "File count: $fileCount"
+        sed -i "s/unpackedSize:.*/unpackedSize: $fileCount/" "$unpackfsConf"
+        echo "Updated unpackfs1.conf with unpackedSize: $fileCount"
+    else
+        echo "WARNING: squashfs file not found at $squashfsFile"
+        echo "Skipping file count update"
+    fi
+
+
+echo
+echo "###################################################################"
+tput setaf 2
+echo "Phase 8 :"
+echo "- Creating checksums"
+echo "- Copying pgklist"
+tput sgr0
+echo "###################################################################"
+echo
+
+	cd $outFolder
+
+	echo "Creating checksums for : "$isoLabel
+	echo "##################################################################"
+	echo
+	echo "Building sha1sum"
+	echo "########################"
+	sha1sum $isoLabel | tee $isoLabel.sha1
+	echo "Building sha256sum"
+	echo "########################"
+	sha256sum $isoLabel | tee $isoLabel.sha256
+	echo "Building md5sum"
+	echo "########################"
+	md5sum $isoLabel | tee $isoLabel.md5
+	echo
+	echo "Moving pkglist.x86_64.txt"
+	echo "########################"
+	cp $buildFolder/iso/arch/pkglist.x86_64.txt  $outFolder/$isoLabel".pkglist.txt"
+
+#echo
+#echo "##################################################################"
+#tput setaf 2
+#echo "Phase 9 :"
+#echo "- Making sure we start with a clean slate next time"
+#tput sgr0
+#echo "################################################################## "
+#echo
+
+	#echo "Deleting the build folder if one exists - takes some time"
+	#[ -d $buildFolder ] && sudo rm -rf $buildFolder
+
+echo
+echo "##################################################################"
+tput setaf 2
+echo "DONE"
+echo "- Check your out folder :"$outFolder
+tput sgr0
+echo "################################################################## "
+echo
