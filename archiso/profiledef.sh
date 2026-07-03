@@ -3,7 +3,7 @@
 
 iso_name="mylastarch"
 iso_label="mylastarch-$(date +%Y%m)"
-iso_publisher="MY LAST ARCH Linux <https://www.dccwebsite.com>"
+iso_publisher="MY LAST ARCH Linux <https://www.dccwebsite.com/mylastarch.html>"
 iso_application="MY LAST ARCH Linux Live/Rescue DVD"
 iso_version="$(date +%Y.%m.%d)"
 install_dir="arch"
