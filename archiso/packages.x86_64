@@ -151,7 +151,7 @@ kio-admin
 calamares
 mylastarch-calamares-config
 #mylastarch-calamares-qml-config
-mylastarch-system-installation
+#mylastarch-system-installation
 #mylastarch-mirrorlist
 kcrash
 yay-bin

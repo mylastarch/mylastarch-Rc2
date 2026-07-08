@@ -1,5 +1,6 @@
 [AC][Display]
 DimDisplayIdleTimeoutSec=-1
 DimDisplayWhenIdle=false
-TurnOffDisplayIdleTimeoutSec=900
+TurnOffDisplayIdleTimeoutSec=-1
 TurnOffDisplayIdleTimeoutWhenLockedSec=300
+TurnOffDisplayWhenIdle=false
