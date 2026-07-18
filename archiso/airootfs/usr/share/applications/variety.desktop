@@ -2,7 +2,7 @@
 Type=Application
 Name=Variety: Random wallpaper
 Comment=Change wallpaper using Variety
-Exec=sh -lc 'variety --random || python3 -m variety --random'
+Exec=variety
 Icon=preferences-desktop-wallpaper
 Terminal=false
 Categories=Utility;Graphics;
