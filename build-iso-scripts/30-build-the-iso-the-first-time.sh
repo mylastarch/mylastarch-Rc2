@@ -210,17 +210,17 @@ echo
 	#Setting variables
 
 	#profiledef.sh
-	oldname1='iso_name="mylastarch-Rc1'
+	oldname1='iso_name="mylastarch'
 	newname1='iso_name="mylastarch-Rc2'
 
-	oldname2='iso_label="mylastarch-Rc1'
+	oldname2='iso_label="mylastarch'
 	newname2='iso_label="mylastarch-Rc2'
 
-	oldname3='mylastarch-Rc1'
+	oldname3='mylastarch'
 	newname3='mylastarch-Rc2'
 
 	#hostname
-	oldname4='mylastarch-Rc1'
+	oldname4='mylastarch'
 	newname4='mylastarch-Rc2'
 
 	#sddm.conf user-session

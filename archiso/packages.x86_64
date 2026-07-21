@@ -134,9 +134,10 @@ zsh
 mylastarch-viper-grub-theme
 bash-completion
 plasma-meta
+#kde-applications-meta
 konsole
 #packagekit-qt6
-plasma-login-manager
+#plasma-login-manager
 sddm
 #sddm-elegant-theme-git
 #mylastarch-sddm-viper-theme

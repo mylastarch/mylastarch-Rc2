@@ -46,7 +46,7 @@ jfsutils
 kitty-terminfo
 ldns
 less
-lftp
+#lftp
 libfido2
 libusb-compat
 linux
@@ -136,21 +136,23 @@ bash-completion
 plasma-meta
 #kde-applications-meta
 konsole
-packagekit-qt6
+#packagekit-qt6
+plasma-login-manager
 sddm
 #sddm-elegant-theme-git
-mylastarch-sddm-viper-theme
+#mylastarch-sddm-viper-theme
 partitionmanager
 dolphin
 kate
 kio-admin
+#kde-cli-tools
 #mylastarch-keyring
 
 #calamares
 calamares
 mylastarch-calamares-config
 #mylastarch-calamares-qml-config
-mylastarch-system-installation
+#mylastarch-system-installation
 #mylastarch-mirrorlist
 kcrash
 yay-bin
@@ -158,10 +160,21 @@ fastfetch
 
 #Software
 alacritty
+arch-update
+archlinux-tweak-tool-gtk4
+libreoffice-fresh
+masterpdfeditor-free
+pamac
 sublime-text-4
+thunderbird
 meld
 cairo-dock
 cairo-dock-plug-ins
+strawberry
+xscreensaver
+
+#network
+b43-firmware
 
 #sound
 pipewire
@@ -183,10 +196,12 @@ adw-gtk-theme
 vimix-cursors
 
 #desktop related
+appmenu-gtk-module
 gvfs
 gvfs-smb
 xdg-user-dirs-gtk
 lsb-release
+qt5-tools
 vivaldi
-
+variety
 

@@ -33,5 +33,5 @@ file_permissions=(
   ["/etc/skel/.config/autostart/set-wallpaper.desktop"]="0:0:644"
   ["/usr/local/bin/set-wallpaper-launcher.sh"]="0:0:755"
   ["/usr/local/bin/set-timezone.sh"]="0:0:755"
- ["/var/lib/iwd"]="0:0:700"
+  ["/var/lib/iwd"]="0:0:700"
 )

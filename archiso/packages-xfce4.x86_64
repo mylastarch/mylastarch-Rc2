@@ -1,8 +1,3 @@
-acl
-adwaita-fonts
-alsa-lib
-alsa-topology-conf
-alsa-ucm-conf
 alsa-utils
 amd-ucode
 arch-install-scripts
@@ -51,7 +46,7 @@ jfsutils
 kitty-terminfo
 ldns
 less
-lftp
+#lftp
 libfido2
 libusb-compat
 linux
@@ -150,16 +145,29 @@ kcrash
 calamares
 mylastarch-calamares-config
 #mylastarch-calamares-qml-config
-mylastarch-system-installation
+#mylastarch-system-installation
 #mylastarch-mirrorlist
 kcrash
 yay-bin
 fastfetch
 
 #Software
+alacritty
+arch-update
+archlinux-tweak-tool-gtk4
+libreoffice-fresh
+masterpdfeditor-free
+pamac
 sublime-text-4
+thunderbird
+meld
 cairo-dock
 cairo-dock-plug-ins
+strawberry
+xscreensaver
+
+#network
+b43-firmware
 
 #sound
 pipewire
@@ -187,5 +195,5 @@ gvfs-smb
 xdg-user-dirs-gtk
 lsb-release
 vivaldi
-
+variety
 
