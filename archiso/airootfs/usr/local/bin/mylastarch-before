@@ -11,10 +11,6 @@ pacman-key --populate
 #pacman-key --populate mylastarch
 
 
-echo "Changing into our own linux.preset"
-echo "#################################"
-mv /etc/mkinitcpio.d/mylastarch /etc/mkinitcpio.d/linux.preset
-
 echo "Putting grub theme in again"
 echo "#################################"
 mkdir -p /boot/grub/themes

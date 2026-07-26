@@ -266,31 +266,6 @@ echo
 	cd $buildFolder/archiso/
 	sudo mkarchiso -v -w $buildFolder -o $outFolder $buildFolder/archiso/
 
-
-echo
-echo "################################################################## "
-tput setaf 2
-echo "Phase 7.5 :"
-echo "- Counting files in squashfs for Calamares progress display"
-tput sgr0
-echo "################################################################## "
-echo
-
-    squashfsFile="$buildFolder/iso/arch/x86_64/airootfs.sfs"
-    unpackfsConf="$HOME/MYLASTARCH/mylastarch-calamares-config/etc/calamares/modules/unpackfs1.conf"
-
-    if [ -f "$squashfsFile" ]; then
-        echo "Counting files in $squashfsFile ..."
-        fileCount=$(unsquashfs -l "$squashfsFile" | wc -l)
-        echo "File count: $fileCount"
-        sed -i "s/unpackedSize:.*/unpackedSize: $fileCount/" "$unpackfsConf"
-        echo "Updated unpackfs1.conf with unpackedSize: $fileCount"
-    else
-        echo "WARNING: squashfs file not found at $squashfsFile"
-        echo "Skipping file count update"
-    fi
-
-
 echo
 echo "###################################################################"
 tput setaf 2

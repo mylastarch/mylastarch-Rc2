@@ -33,5 +33,7 @@ file_permissions=(
   ["/etc/skel/.config/autostart/set-wallpaper.desktop"]="0:0:644"
   ["/usr/local/bin/set-wallpaper-launcher.sh"]="0:0:755"
   ["/usr/local/bin/set-timezone.sh"]="0:0:755"
+  ["/etc/skel/calamares.desktop"]="0:0:755"
   ["/var/lib/iwd"]="0:0:700"
+  ["/opt/vivaldi/initial_preferences"]="0:0:644"
 )
