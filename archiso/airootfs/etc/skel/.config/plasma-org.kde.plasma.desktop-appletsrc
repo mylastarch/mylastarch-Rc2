@@ -7,11 +7,9 @@ RightButton;NoModifier=org.kde.contextmenu
 
 [Containments][1][Wallpaper][org.kde.slideshow]
 SlideInterval=300
-SlidePaths=$HOME/.config/variety/Downloaded
 
 [Containments][1][Wallpaper][org.kde.slideshow][General]
 SlideInterval=300
-SlidePaths=#HOME/.config/variety/Downloaded
 
 [Containments][162]
 activityId=
@@ -254,7 +252,6 @@ wallpaperplugin=org.kde.slideshow
 
 [Containments][213][Wallpaper][org.kde.slideshow][General]
 SlideInterval=300
-SlidePaths=/home/demo/.config/variety/Downloaded
 
 [ScreenMapping]
 itemsOnDisabledScreens=

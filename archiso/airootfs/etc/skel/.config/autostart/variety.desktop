@@ -8,6 +8,5 @@ Icon=variety
 Terminal=false
 Type=Application
 StartupNotify=false
-Actions=Next;Previous;PauseResume;History;Preferences;
 Keywords=Wallpaper;Changer;Change;Download;Downloader;Variety;
 StartupWMClass=Variety

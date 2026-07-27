@@ -1,5 +1,5 @@
 #!/bin/bash
-#set -e
+set -e
 ##################################################################################################################
 #
 #   DO NOT JUST RUN THIS. EXAMINE AND JUDGE. RUN AT YOUR OWN RISK.
@@ -22,13 +22,17 @@ echo
 
 	#mylastarchVersion='26.05.31'
 
-	isoLabel='mylastarch-Rc2-'$(date +%Y.%m.%d)'-x86_64.iso'
+	isoLabel="mylastarch-Rc2-$(date +%Y.%m.%d)-x86_64.iso"
 
 	# setting of the general parameters
-	archisoRequiredVersion="archiso 88-1"
-	buildFolder=$HOME"/mylastarch-build"
-	outFolder=$HOME"/mylastarch-Out"
-	archisoVersion=$(sudo pacman -Q archiso)
+	scriptDir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+	repoDir="$(dirname -- "$scriptDir")"
+	sourceProfile="$repoDir/archiso"
+	readmeFile="$repoDir/archiso.readme"
+	archisoRequiredVersion="archiso 89-1"
+	buildFolder="$HOME/mylastarch-build"
+	outFolder="$HOME/mylastarch-Out"
+	archisoVersion="$(pacman -Q archiso)"
 
 	echo "################################################################## "
 	echo "Building the desktop                   : "$desktop
@@ -54,6 +58,7 @@ echo
 	echo "or update your system"
 	echo "###################################################################################################"
 	tput sgr0
+	exit 1
 	fi
 
 echo
@@ -62,69 +67,20 @@ tput setaf 2
 echo "Phase 2 :"
 echo "- Checking if archiso is installed"
 echo "- Saving current archiso version to readme"
-echo "- Making mkarchiso verbose"
 tput sgr0
 echo "################################################################## "
 echo
 
-	package="archiso"
-
-	#----------------------------------------------------------------------------------
-
-	#checking if application is already installed or else install with aur helpers
-	if pacman -Qi $package &> /dev/null; then
-
-			echo "Archiso is already installed"
-
-	else
-
-		#checking which helper is installed
-		if pacman -Qi yay &> /dev/null; then
-
-			echo "################################################################"
-			echo "######### Installing with yay"
-			echo "################################################################"
-			yay -S --noconfirm $package
-
-		elif pacman -Qi trizen &> /dev/null; then
-
-			echo "################################################################"
-			echo "######### Installing with trizen"
-			echo "################################################################"
-			trizen -S --noconfirm --needed --noedit $package
-
-		fi
-
-		# Just checking if installation was successful
-		if pacman -Qi $package &> /dev/null; then
-
-			echo "################################################################"
-			echo "#########  "$package" has been installed"
-			echo "################################################################"
-
-		else
-
-			echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-			echo "!!!!!!!!!  "$package" has NOT been installed"
-			echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-			exit 1
-		fi
-
-	fi
-
-	echo
-	echo "Saving current archiso version to readme"
-	sudo sed -i "s/\(^archiso-version=\).*/\1$archisoVersion/" ../archiso.readme
-	echo
-	echo "Making mkarchiso verbose"
-	sudo sed -i 's/quiet="y"/quiet="n"/g' /usr/bin/mkarchiso
+		echo
+		echo "Saving current archiso version to readme"
+		sed -i "s/\(^archiso-version=\).*/\1$archisoVersion/" "$readmeFile"
 
 #----------------------------------------------------------------------
 
 package="mylastarch-keyring"
 
 #checking if application is already installed or else install
-if pacman -Qi $package &> /dev/null; then
+	if pacman -Qi "$package" &> /dev/null; then
 	
 	echo "################################################################## "
 	echo "mylastarch keyring is already installed"	
@@ -138,7 +94,7 @@ else
 fi
 
 # Just cheking if installtion was successful
-if pacman -Qi $package &> /dev/null; then
+if pacman -Qi "$package" &> /dev/null; then
 
 	echo "################################################################## "
 	echo "############  "$package" has been installed"
@@ -159,43 +115,23 @@ echo "################################################################## "
 echo
 
 	echo "Deleting the build folder if one exists - takes some time"
-	[ -d $buildFolder ] && sudo rm -rf $buildFolder
+		if [ -d "$buildFolder" ]; then
+			sudo rm -rf -- "$buildFolder"
+		fi
 	echo
 	echo "Copying the Archiso folder to build work"
 	echo
-	mkdir $buildFolder
-	cp -r ../archiso $buildFolder/archiso
+		mkdir -p -- "$buildFolder"
+		cp -a -- "$sourceProfile" "$buildFolder/archiso"
 
 echo
 echo "################################################################## "
 tput setaf 2
 echo "Phase 4 :"
-#echo "- Deleting any files in /etc/skel"
-#echo "- Getting the last version of bashrc in /etc/skel"
-echo "- Removing the old packages.x86_64 file from build folder"
-echo "- Copying the new packages.x86_64 file to the build folder"
-echo "- Changing group for polkit folder"
+echo "- Using packages.x86_64 from the copied Archiso profile"
 tput sgr0
 echo "################################################################## "
 echo
-
-	#echo "Deleting any files in /etc/skel"
-	#rm -rf $buildFolder/archiso/airootfs/etc/skel/.* 2> /dev/null
-	#echo
-
-	#echo "Getting the last version of bashrc in /etc/skel"
-	#echo
-	#wget https://raw.githubusercontent.com/arcolinux/arcolinux-root/master/etc/skel/.bashrc-latest -O $buildFolder/archiso/airootfs/etc/skel/.bashrc
-
-	echo "Removing the old packages.x86_64 file from build folder"
-	rm $buildFolder/archiso/packages.x86_64
-	echo
-	echo "Copying the new packages.x86_64 file to the build folder"
-	cp -f ../archiso/packages.x86_64 $buildFolder/archiso/packages.x86_64
-	echo
-	#echo "Changing group for polkit folder"
-	#sudo chgrp polkitd $buildFolder/archiso/airootfs/etc/polkit-1/rules.d
-	#is not working so fixing this during calamares installation
 
 echo
 echo "################################################################## "
@@ -207,38 +143,18 @@ tput sgr0
 echo "################################################################## "
 echo
 
-	#Setting variables
-
-	#profiledef.sh
-	oldname1='iso_name="mylastarch'
-	newname1='iso_name="mylastarch-Rc2'
-
-	oldname2='iso_label="mylastarch'
-	newname2='iso_label="mylastarch-Rc2'
-
-	oldname3='mylastarch'
-	newname3='mylastarch-Rc2'
-
-	#hostname
-	oldname4='mylastarch'
-	newname4='mylastarch-Rc2'
-
-	#sddm.conf user-session
-	oldname5='Session=plasma'
-	newname5='Session='$dmDesktop
-
-	echo "Changing all references"
-	echo
-	sed -i 's/'$oldname1'/'$newname1'/g' $buildFolder/archiso/profiledef.sh
-	sed -i 's/'$oldname2'/'$newname2'/g' $buildFolder/archiso/profiledef.sh
-	sed -i 's/'$oldname3'/'$newname3'/g' $buildFolder/archiso/airootfs/etc/dev-rel
-	sed -i 's/'$oldname4'/'$newname4'/g' $buildFolder/archiso/airootfs/etc/hostname
-	sed -i 's/'$oldname5'/'$newname5'/g' $buildFolder/archiso/airootfs/etc/sddm.conf
+		echo "Changing all references"
+		echo
+		sed -i 's/^iso_name=.*/iso_name="mylastarch-Rc2"/' "$buildFolder/archiso/profiledef.sh"
+		sed -i 's/^iso_label=.*/iso_label="mylastarch-Rc2-$(date +%Y%m)"/' "$buildFolder/archiso/profiledef.sh"
+		sed -i 's/^ISO_CODENAME=.*/ISO_CODENAME=mylastarch-Rc2/' "$buildFolder/archiso/airootfs/etc/dev-rel"
+		printf '%s\n' 'mylastarch-Rc2' > "$buildFolder/archiso/airootfs/etc/hostname"
+		sed -i "s/^Session=.*/Session=$dmDesktop/" "$buildFolder/archiso/airootfs/etc/sddm.conf"
 
 	echo "Adding time to /etc/dev-rel"
 	date_build=$(date -d now)
-	echo "Iso build on : "$date_build
-	sudo sed -i "s/\(^ISO_BUILD=\).*/\1$date_build/" $buildFolder/archiso/airootfs/etc/dev-rel
+		echo "Iso build on : $date_build"
+		sed -i "s/^ISO_BUILD=.*/ISO_BUILD=$date_build/" "$buildFolder/archiso/airootfs/etc/dev-rel"
 
 
 #echo
@@ -262,9 +178,9 @@ tput sgr0
 echo "################################################################## "
 echo
 
-	[ -d $outFolder ] || mkdir $outFolder
-	cd $buildFolder/archiso/
-	sudo mkarchiso -v -w $buildFolder -o $outFolder $buildFolder/archiso/
+		mkdir -p -- "$outFolder"
+		cd "$buildFolder/archiso/"
+		sudo mkarchiso -v -w "$buildFolder" -o "$outFolder" "$buildFolder/archiso/"
 
 echo
 echo "###################################################################"
@@ -276,24 +192,24 @@ tput sgr0
 echo "###################################################################"
 echo
 
-	cd $outFolder
+		cd "$outFolder"
 
-	echo "Creating checksums for : "$isoLabel
+		echo "Creating checksums for : $isoLabel"
 	echo "##################################################################"
 	echo
 	echo "Building sha1sum"
 	echo "########################"
-	sha1sum $isoLabel | tee $isoLabel.sha1
+		sha1sum "$isoLabel" | tee "$isoLabel.sha1"
 	echo "Building sha256sum"
 	echo "########################"
-	sha256sum $isoLabel | tee $isoLabel.sha256
+		sha256sum "$isoLabel" | tee "$isoLabel.sha256"
 	echo "Building md5sum"
 	echo "########################"
-	md5sum $isoLabel | tee $isoLabel.md5
+		md5sum "$isoLabel" | tee "$isoLabel.md5"
 	echo
 	echo "Moving pkglist.x86_64.txt"
 	echo "########################"
-	cp $buildFolder/iso/arch/pkglist.x86_64.txt  $outFolder/$isoLabel".pkglist.txt"
+		cp "$buildFolder/iso/arch/pkglist.x86_64.txt" "$outFolder/$isoLabel.pkglist.txt"
 
 #echo
 #echo "##################################################################"
@@ -311,7 +227,7 @@ echo
 echo "##################################################################"
 tput setaf 2
 echo "DONE"
-echo "- Check your out folder :"$outFolder
+echo "- Check your out folder : $outFolder"
 tput sgr0
 echo "################################################################## "
 echo
