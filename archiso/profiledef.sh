@@ -27,6 +27,7 @@ file_permissions=(
   ["/usr/local/bin/livecd-sound"]="0:0:755"
   ["/usr/local/bin/mylastarch-before"]="0:0:755"
   ["/usr/local/bin/mylastarch-final"]="0:0:755"
+  ["/usr/local/libexec/plm-wallpaper-sync"]="0:0:755"
   ["/usr/local/bin/get-nemesis-on-mylastarch"]="0:0:755"
   ["/usr/local/bin/set-wallpaper.sh"]="0:0:755"
   ["/etc/skel/.local/bin/set-slideshow.sh"]="0:0:755"
@@ -34,6 +35,7 @@ file_permissions=(
   ["/usr/local/bin/set-wallpaper-launcher.sh"]="0:0:755"
   ["/usr/local/bin/set-timezone.sh"]="0:0:755"
   ["/etc/skel/calamares.desktop"]="0:0:755"
+  ["/etc/skel/Desktop/calamares.desktop"]="0:0:755"
   ["/var/lib/iwd"]="0:0:700"
   ["/opt/vivaldi/initial_preferences"]="0:0:644"
 )

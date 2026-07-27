@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
+
 echo
 echo "#################################"
 echo "Start mylastarch-final"
@@ -20,23 +22,15 @@ rm -rf /etc/systemd/system/getty@tty1.service.d
 
 echo "Setting editor to nano"
 echo "#################################"
-echo "EDITOR=nano" >> /etc/profile
+grep -qxF "EDITOR=nano" /etc/profile || echo "EDITOR=nano" >> /etc/profile
 
-
-#Original cleanup
 echo "Cleanup original files"
 echo "#################################"
 rm -f /etc/sudoers.d/g_wheel
 rm -f /etc/polkit-1/rules.d/49-nopasswd_global.rules
-rm -r /etc/systemd/system/etc-pacman.d-gnupg.mount
-rm /root/{.automated_script.sh,.zlogin}
-mv /etc/mylastarch-release /etc/lsb-release
-
-#cleanup
-#for i in 'ls /home/'; do rm -rf /home/$i/*/calamares.desktop || exit 0; done
-#for i in 'ls /home/'; do rm -rf /home/$i/.local/share/xfce* || exit 0; done
-
-
+rm -rf /etc/systemd/system/etc-pacman.d-gnupg.mount
+rm -f /root/.automated_script.sh /root/.zlogin
+mv -f /etc/mylastarch-release /etc/lsb-release
 
 echo "Permission of root"
 echo "#################################"
@@ -45,4 +39,4 @@ chmod -v 750 /root
 echo "#################################"
 echo "End mylastarch-final"
 echo "#################################"
-rm /usr/local/bin/mylastarch-final
+rm -f /usr/local/bin/mylastarch-final

@@ -2,7 +2,8 @@
 Description=Plasma Login Manager
 Documentation=man:plasmalogin(1) man:plasmalogin.conf(5)
 Conflicts=getty@tty1.service
-After=systemd-user-sessions.service getty@tty1.service plymouth-quit.service systemd-logind.service
+Wants=plm-wallpaper-sync.service
+After=systemd-user-sessions.service getty@tty1.service plymouth-quit.service systemd-logind.service plm-wallpaper-sync.service
 PartOf=graphical.target
 StartLimitIntervalSec=30
 StartLimitBurst=2
